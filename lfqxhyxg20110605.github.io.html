@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>下小权 - 官方官网</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * {margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth;}
+        html, body {height: 100%; background: #0a0e17; color: #e2e8f0; overflow: hidden; position: relative;}
+        /* 全局水印 - 下小权 定制 */
+        .watermark {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.08;
+        }
+        .watermark-item {
+            position: absolute;
+            font-size: 40px;
+            font-weight: 700;
+            color: #38bdf8;
+            transform: rotate(-30deg);
+            white-space: nowrap;
+        }
+        /* 主容器 */
+        .main-container {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 顶部导航栏 - 科技风 */
+        .header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 0 40px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 0 20px rgba(0, 173, 255, 0.1);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(90deg, #38bdf8, #60a5fa);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0a0e17;
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 2px;
+            height: 100%;
+        }
+        .tab-item {
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .tab-item.active {
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+        }
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #38bdf8, #60a5fa);
+            border-radius: 3px 3px 0 0;
+        }
+        .tab-item:hover {
+            color: #e2e8f0;
+            background: rgba(148, 163, 184, 0.1);
+        }
+        /* 内容区域 - 无缝切换 */
+        .content-wrapper {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .content-container {
+            width: 100%;
+            max-width: 1400px;
+            display: none;
+        }
+        .content-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% {opacity: 0; transform: translateY(10px);}
+            100% {opacity: 1; transform: translateY(0);}
+        }
+        /* 通用模块样式 - 玻璃拟态 */
+        .module {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 173, 255, 0.08);
+        }
+        .module-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .module-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #38bdf8, #60a5fa);
+            border-radius: 4px;
+        }
+        .module-desc {
+            color: #94a3b8;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        /* 按钮通用样式 - 科技风 */
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(90deg, #38bdf8, #60a5fa);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #0a0e17;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(56, 189, 248, 0.2);
+            background: linear-gradient(90deg, #2563eb, #38bdf8);
+        }
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+        }
+        .btn-outline:hover {
+            background: rgba(56, 189, 248, 0.1);
+            color: #e2e8f0;
+            box-shadow: none;
+        }
+        /* 1. 首页样式 */
+        .home-banner {
+            background: linear-gradient(135deg, rgba(23, 41, 77, 0.8), rgba(15, 23, 42, 0.8));
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 173, 255, 0.15);
+        }
+        .home-banner-title {
+            font-size: 48px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #38bdf8, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .home-banner-desc {
+            font-size: 18px;
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.8;
+        }
+        .home-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .home-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        .home-card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
+        }
+        .home-card-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+        .home-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 10px;
+        }
+        .home-card-desc {
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        /* 2. 产品介绍样式 */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        .product-item {
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .product-item:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
+        }
+        .product-img {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #ffffff;
+        }
+        .product-info {
+            padding: 20px;
+        }
+        .product-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 10px;
+        }
+        .product-desc {
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .product-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .product-tag {
+            padding: 4px 12px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #38bdf8;
+        }
+        /* 3. 资源下载样式 - 核心功能 */
+        .download-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .download-cat {
+            padding: 8px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 20px;
+            font-size: 14px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all  0.3s ease;
+        }
+        .download-cat.active {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+        .download-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .download-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .download-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .download-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(90deg, #38bdf8, #60a5fa);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #0a0e17;
+        }
+        .download-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        .download-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .download-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        /* 4. 关于我们样式 */
+        .about-content {
+            line-height: 2;
+            color: #94a3b8;
+            max-width: 1000px;
+        }
+        .about-content p {
+            margin-bottom: 20px;
+        }
+        .about-content strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+        .about-content a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        .about-content a:hover {
+            text-decoration: underline;
+        }
+        .team-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .team-member {
+            text-align: center;
+        }
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #38bdf8, #60a5fa);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #0a0e17;
+        }
+        .team-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+        .team-role {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        /* 5. 联系我们样式 */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1000px;
+        }
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #38bdf8;
+            flex-shrink: 0;
+        }
+        .contact-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+        .contact-desc {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        .contact-desc a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        .contact-desc a:hover {
+            text-decoration: underline;
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .form-input {
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 8px;
+            color: #e2e8f0;
+            outline: none;
+            font-size: 16px;
+        }
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+        .form-textarea {
+            min-height: 120px;
+            resize: none;
+        }
+        /* 底部版权 */
+        .footer {
+            padding: 20px 40px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+            border-top: 1px solid rgba(56, 189, 248, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .footer a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        /* 响应式适配 - 电脑/平板/手机 */
+        @media (max-width: 1200px) {
+            .product-list {grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));}
+            .download-list {grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));}
+        }
+        @media (max-width: 768px) {
+            .header {padding: 0 20px;}
+            .tab-item {padding: 0 15px; font-size: 14px;}
+            .content-wrapper {padding: 20px;}
+            .module {padding: 20px;}
+            .home-banner {padding: 40px 20px;}
+            .home-banner-title {font-size: 32px;}
+            .home-cards {grid-template-columns: 1fr;}
+            .product-list {grid-template-columns: 1fr;}
+            .download-list {grid-template-columns: 1fr;}
+            .contact-wrapper {grid-template-columns: 1fr;}
+            .team-list {grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));}
+        }
+        @media (max-width: 420px) {
+            .logo-text {font-size: 18px;}
+            .logo-icon {width: 35px; height: 35px; font-size: 18px;}
+            .home-banner-title {font-size: 24px;}
+            .module-title {font-size: 20px;}
+        }
+    </style>
+</head>
+<body>
+    <!-- 全局定制水印 - 下小权 -->
+    <div class="watermark" id="watermark"></div>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">X</div>
+                <div class="logo-text">下小权官网</div>
+            </div>
+            <div class="nav-tabs" id="navTabs">
+                <div class="tab-item active" data-tab="home">首页</div>
+               
+                <div class="tab-item" data-tab="download">资源下载</div>
+                <div class="tab-item" data-tab="about">关于我们</div>
+                <div class="tab-item" data-tab="contact">联系我们</div>
+            </div>
+        </header>
+
+        <!-- 内容区域 -->
+        <div class="content-wrapper">
+            <!-- 1. 首页 -->
+            <div class="content-container active" id="home">
+                <div class="home-banner">
+                    <h1 class="home-banner-title">下小权 官方平台</h1>
+                    <p class="home-banner-desc">专注于优质资源分享、产品研发与技术服务，为用户提供高效、稳定、专业的解决方案，打造一站式科技服务平台</p>
+                    <a href="#download" class="btn" onclick="switchTab('download')">立即前往下载 <span>→</span></a>
+                </div>
+
+                <div class="module">
+                    <h2 class="module-title">平台核心优势</h2>
+                    <div class="home-cards">
+                        <div class="home-card">
+                            <div class="home-card-icon">⚡</div>
+                            <h3 class="home-card-title">高速稳定</h3>
+                            <p class="home-card-desc">所有资源均经过多重测试，下载速度快，运行稳定，无冗余插件，保障使用体验</p>
+                            <a href="#" class="btn btn-outline">了解更多</a>
+                        </div>
+                        <div class="home-card">
+                            <div class="home-card-icon">📦</div>
+                            <h3 class="home-card-title">资源丰富</h3>
+                            <p class="home-card-desc">涵盖各类安装包、文档、工具、素材等资源，分类清晰，更新及时，满足不同用户需求</p>
+                            <a href="#" class="btn btn-outline">查看全部</a>
+                        </div>
+                        <div class="home-card">
+                            <div class="home-card-icon">🔒</div>
+                            <h3 class="home-card-title">安全可靠</h3>
+                            <p class="home-card-desc">所有资源均经过病毒查杀、安全检测，无恶意代码，保障设备与数据安全</p>
+                            <a href="#" class="btn btn-outline">安全保障</a>
+                        </div>
+                        <div class="home-card">
+                            <div class="home-card-icon">💻</div>
+                            <h3 class="home-card-title">全端适配</h3>
+                            <p class="home-card-desc">产品与资源支持Windows、Mac、Android、iOS等多端系统，跨平台使用无压力</p>
+                            <a href="#" class="btn btn-outline">适配详情</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <h2 class="module-title">最新更新</h2>
+                    <p class="module-desc">2025.10.01 - 新增下小权资源版本，优化下载速度，修复已知问题，新增多项实用功能；更新下小权素材包，新增100+优质资源。</p>
+                    <a href="#" class="btn">查看更新日志 <span>→</span></a>
+                </div>
+            </div>
+
+
+
+            <!-- 3. 资源下载 - 核心功能 -->
+            <div class="content-container" id="download">
+                <div class="module">
+                    <h2 class="module-title">资源下载中心</h2>
+                    <p class="module-desc">平台所有资源均免费分享，分类清晰，更新及时，下载前请仔细阅读使用说明，遵守相关使用规范</p>
+                    <div class="download-categories">
+                        <div class="download-cat active">全部资源</div>
+                        <div class="download-cat">软件工具</div>
+                        <div class="download-cat">文档教程</div>
+                        <div class="download-cat">设计素材</div>
+                        <div class="download-cat">安装包</div>
+                        <div class="download-cat">其他资源</div>
+                    </div>
+                    <div class="download-list">
+                        <!-- 可无限添加下载项，替换链接即可 -->
+                        <div class="download-item">
+                            <div class="download-header">
+                                <div class="download-icon">💻</div>
+                                <div class="download-title">PUBG4.2 官方安装包</div>
+                            </div>
+                            <div class="download-meta">
+                                <span>大小：未知</span>
+                                <span>更新：随时都更新</span>
+                            </div>
+                            <p class="module-desc" style="margin:0;"></p>
+                            <div class="download-btns">
+                      
+                                <a href="https://www.123684.com/s/Y6zRjv-VbMVH" class="btn btn-outline" target="_blank">123网盘</a>
+                            </div>
+                        </div>
+                        <div class="download-item">
+                            <div class="download-header">
+                                <div class="download-icon">😁</div>
+                                <div class="download-title">资源分享</div>
+                            </div>
+                            <div class="download-meta">
+                                <span></span>
+                                <span>更新：随时都随时都更新</span>
+                            </div>
+                            <p class="module-desc" style="margin:0;"></p>
+                            <div class="download-btns">
+                                <a href="https://www.123684.com/s/Y6zRjv-TZMVH" class="btn btn-outline" target="_blank">123网盘</a>
+                            </div>
+                        </div>
+                        <div class="download-item">
+                            <div class="download-header">
+                                <div class="download-icon">$</div>
+                                <div class="download-title">付费区域</div>
+                            </div>
+                            <div class="download-meta">
+                                <span></span>
+                                <span>更新：随时</span>
+                            </div>
+                            <p class="module-desc" style="margin:0;"></p>
+                            <div class="download-btns">
+                                
+                                <a href="https://918.oioix.cn/links/9426A845" class="btn btn-outline" target="_blank">点我</a>
+                            </div>
+                        </div>
+                        <div class="download-item">
+                            <div class="download-header">
+                                <div class="download-icon">📚</div>
+                                <div class="download-title">各种教程</div>
+                            </div>
+                            <div class="download-meta">
+                                <span></span>
+                                <span>更新：随时</span>
+                            </div>
+                            <p class="module-desc" style="margin:0;"></p>
+                            <div class="download-btns">
+                                
+                                <a href="     " class="btn btn-outline" target="_blank">123网盘</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <h2 class="module-title">下载须知</h2>
+                    <div class="about-content">
+                        <p>1. 所有资源均为免费分享，仅供个人学习、研究使用，禁止用于商业用途，否则后果自负。</p>
+                        <p>2. 部分资源可能需要解压密码，统一解压密码为：<strong>无</strong>。</p>
+                        <p>3. 下载后请先进行病毒查杀，若遇资源失效、无法下载等问题，请通过<a href="#contact" onclick="switchTab('contact')">联系我们</a>反馈。</p>
+                        <p>4. 平台会定期更新资源，建议收藏本页面，及时获取最新资源信息。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 关于我们 -->
+            <div class="content-container" id="about">
+                <div class="module">
+                    <h2 class="module-title">平台简介</h2>
+                    <div class="about-content">
+                        <p><strong>下小权官方平台</strong>是一个专注于优质资源分享、产品研发与技术服务的科技平台，致力于为广大用户提供高效、稳定、专业的工具产品与资源服务。</p>
+                        <p>平台成立以来，始终坚持「用户至上、品质第一」的理念，不断打磨产品性能，丰富资源库，优化服务体验，累计为数十万用户提供了优质的产品与资源服务，获得了用户的广泛认可与好评。</p>
+                        <p>我们的团队由一群热爱科技、专注研发的工程师、设计师、产品经理组成，拥有丰富的行业经验与技术积累，始终紧跟行业发展趋势，不断创新，为用户打造更贴合需求的产品与服务。</p>
+                        <p>未来，我们将继续深耕科技领域，不断拓展产品与资源版图，为用户提供更全面、更优质的一站式科技服务，成为用户身边值得信赖的科技伙伴。</p>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <h2 class="module-title">XXQ团队</h2>
+                    <div class="team-list">
+                        <div class="team-member">
+                            <div class="team-avatar">X</div>
+                            <h3 class="team-name">下小权</h3>
+                            <p class="team-role">创始人 / 产品总负责人</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="team-avatar">Z</div>
+                            <h3 class="team-name">张天赐</h3>
+                            <p class="team-role">技术总监 / 首席工程师</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="team-avatar">L</div>
+                            <h3 class="team-name">李文华</h3>
+                            <p class="team-role">设计总监 / 视觉设计师</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="team-avatar">W</div>
+                            <h3 class="team-name">无</h3>
+                            <p class="team-role">运营总监 / 资源负责人</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <h2 class="module-title">发展历程</h2>
+                    <div class="about-content">
+                        <p><strong>2024.01</strong> - 下小权平台正式成立，聚焦于工具产品研发与小型资源分享；</p>
+                        <p><strong>2024.06</strong> - 首款核心产品「XX多功能工具」上线，累计下载量突破10万；</p>
+                        <p><strong>2024.12</strong> - 资源下载中心上线，涵盖软件、文档、素材等多类资源，用户量突破50万；</p>
+                        <p><strong>2025.06</strong> - 完成产品全系升级，新增多端适配功能，上线定制化开发服务；</p>
+                        <p><strong>2025.10</strong> - 平台全新官网上线，优化产品与资源体系，开启一站式科技服务新篇章。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 联系我们 -->
+            <div class="content-container" id="contact">
+                <div class="module">
+                    <h2 class="module-title">联系我们</h2>
+                    <p class="module-desc">若您有产品问题、资源反馈、定制需求或合作意向，可通过以下方式联系我们，我们将在24小时内回复</p>
+                    <div class="contact-wrapper">
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <div class="contact-icon">📧</div>
+                                <div>
+                                    <h3 class="contact-title">官方邮箱</h3>
+                                    <p class="contact-desc">3628630250@qq.com<br>可发送详细问题与需求，优先回复</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">📱</div>
+                                <div>
+                                    <h3 class="contact-title">官方TG</h3>
+                                    <p class="contact-desc">@XXQ0605<br>添加请备注「平台用户」，方便验证</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">👨‍💻</div>
+                                <div>
+                                    <h3 class="contact-title">技术交流群</h3>
+                                    <p class="contact-desc">QQ群：1078416842<br>群内可交流产品使用、资源分享、问题排查</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">💬</div>
+                                <div>
+                                    <h3 class="contact-title">反馈渠道</h3>
+                                    <p class="contact-desc"><a href="#">点击前往反馈平台</a><br>提交产品bug、资源问题、功能建议</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-form">
+                            <input type="text" class="form-input" placeholder="填写名称">
+                            <input type="text" class="form-input" placeholder="填写QQ号">
+                            <input type="text" class="form-input" placeholder="填写联系">
+                            <textarea class="form-input form-textarea" placeholder="请详细描述您的问题或需求..."></textarea>
+                            <button class="btn">提交信息</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <h2 class="module-title">合作与商务</h2>
+                    <div class="about-content">
+                        <p>我们欢迎各类形式的合作，包括但不限于：资源合作、产品推广、定制开发、品牌联名等，若您有商务合作意向，请发送详细合作方案至官方邮箱：<strong>3628630250@qq.com</strong>，备注「商务合作」，我们将安排专人与您对接。</p>
+                        <p>同时，我们也欢迎优秀的开发者、设计师、运营者加入我们的团队，若您对我们的平台感兴趣，想共同发展，可发送简历至上述邮箱，备注「应聘」+ 岗位名称。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部版权 -->
+        <footer class="footer">
+            <p>© 2025 下小权 官方官网 版权所有 | 本站所有资源仅供学习研究使用，禁止商用</p>
+            <p>本网站由 <a href="#">下小权技术团队</a> 开发与维护</p>
+        </footer>
+    </div>
+
+    <script>
+        // 1. 生成全局定制水印 - 下小权
+        function createWatermark() {
+            const container = document.getElementById('watermark');
+            const watermarkText = '下小权';
+            const row = 15; // 行数
+            const col = 20; // 列数
+            container.innerHTML = '';
+            for (let i = 0; i < row; i++) {
+                for (let j = 0; j < col; j++) {
+                    const item = document.createElement('div');
+                    item.className = 'watermark-item';
+                    item.innerText = watermarkText;
+                    item.style.top = `${(i / row) * 100}%`;
+                    item.style.left = `${(j / col) * 100}%`;
+                    container.appendChild(item);
+                }
+            }
+        }
+        createWatermark();
+        // 窗口大小变化重新生成水印
+        window.onresize = createWatermark;
+
+        // 2. 标签页无缝切换
+        const tabItems = document.querySelectorAll('.tab-item');
+        const contentContainers = document.querySelectorAll('.content-container');
+        const downloadCats = document.querySelectorAll('.download-cat');
+
+        function switchTab(tabId) {
+            // 切换导航标签
+            tabItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.tab === tabId) {
+                    item.classList.add('active');
+                }
+            });
+            // 切换内容区域
+            contentContainers.forEach(container => {
+                container.classList.remove('active');
+                if (container.id === tabId) {
+                    container.classList.add('active');
+                }
+            });
+            // 回到顶部
+            document.querySelector('.content-wrapper').scrollTop = 0;
+        }
+
+        // 导航标签点击事件
+        tabItems.forEach(item => {
+            item.addEventListener('click', () => {
+                switchTab(item.dataset.tab);
+            });
+        });
+
+        // 下载分类标签点击事件
+        downloadCats.forEach(cat => {
+            cat.addEventListener('click', () => {
+                downloadCats.forEach(item => item.classList.remove('active'));
+                cat.classList.add('active');
+            });
+        });
+
+        // 3. 表单提交提示
+        document.querySelector('.contact-form .btn').addEventListener('click', () => {
+            alert('信息提交成功！我们将在24小时内与您联系，感谢您的反馈～');
+            document.querySelector('.contact-form').reset();
+        });
+    </script>
+</body>
+</html>
